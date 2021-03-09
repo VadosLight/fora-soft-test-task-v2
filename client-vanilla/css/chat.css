@@ -15,7 +15,7 @@
   border-width: 0;
   border-radius: var(--radius);
   margin-left: 15px;
-  background-color:  rgba(93, 194, 251, 0.3);
+  background-color: rgba(93, 194, 251, 0.3);
 }
 
 .chat-container {
@@ -44,14 +44,13 @@
 }
 
 .chat-sidebar {
-  background: var(--light-color); 
- 
+  background: var(--light-color);
+
   max-width: 200px;
-  color: rgb(57,57,57);
+  color: rgb(57, 57, 57);
   padding: 20px 20px 60px;
   overflow-y: scroll;
   font-weight: bold;
-  
 }
 
 .chat-sidebar h2 {
@@ -68,6 +67,15 @@
 
 .chat-sidebar ul li {
   padding: 10px 0;
+  list-style: rgb(204, 45, 45);
+}
+
+li::before {
+  content: "•";
+  color: rgb(54, 226, 38);
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
 }
 
 .chat-messages {
@@ -111,7 +119,7 @@
 
 .chat-form-container input[type="text"] {
   font-size: 16px;
-  padding: 5px;
+  padding: 5px 30px;
   height: 40px;
   flex: 1;
   border-radius: var(--radius);

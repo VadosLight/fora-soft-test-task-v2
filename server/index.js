@@ -1,12 +1,11 @@
-// const sqlite3 = require("sqlite3").verbose();
-// const db = new sqlite3.Database(
-//   "C:/Users/it-va/Documents/GitHub/test-server/db.db"
-// );
 const path = require("path");
 const http = require("http");
 const express = require("express");
 const socketio = require("socket.io");
 const formatMessage = require("./utils/messages");
+
+const sqlite3 = require("sqlite3").verbose();
+const db = new sqlite3.Database("db/db.db");
 
 const {
   userJoin,
@@ -27,16 +26,17 @@ const botName = "info";
 //Действия при подключении
 io.on("connection", (socket) => {
   socket.on("joinRoom", ({ username, room }) => {
+    
     const user = userJoin(socket.id, username, room);
 
     socket.join(user.room);
 
     socket.emit(
       "message",
-      formatMessage(botName, `Добро пожаловать в комнату "${user.room}"`)
+      formatMessage(botName, `${user.username}, добро пожаловать в комнату "${user.room}"`)
     );
 
-    //Трансляция, когда пользователь подключается
+    //оповещаем комнату, что к ним присоединились
     socket.broadcast
       .to(user.room)
       .emit(
@@ -55,7 +55,17 @@ io.on("connection", (socket) => {
   socket.on("chatMessage", (msg) => {
     const user = getCurrentUser(socket.id);
 
-    io.to(user.room).emit("message", formatMessage(user.username, msg));
+    const msgInfo = formatMessage(user.username, msg);
+    
+    io.to(user.room).emit("message", msgInfo);
+
+    //пишем в БД
+    db.run(`INSERT INTO messages(text, time, username, room) VALUES(?,?,?,?)`, [
+      msg,
+      msgInfo.time,
+      user.username,
+      user.room
+    ]);
   });
 
   // действия при отсоединении пользователя
@@ -63,7 +73,7 @@ io.on("connection", (socket) => {
     const user = userLeave(socket.id);
 
     if (user) {
-      io.to(user.room).emit(
+      io.to(user.room).emit(  
         "message",
         formatMessage(botName, `${user.username} вышел из чата`)
       );
