@@ -71,6 +71,7 @@ a {
 .join-main label {
   display: block;
   margin-bottom: 5px;
+  
 }
 
 .join-main input[type="text"] {
@@ -82,6 +83,7 @@ a {
   border-width: 1;
   border-style: solid;
   border-color:lightslategray;
+  outline: none;
 
 }
 

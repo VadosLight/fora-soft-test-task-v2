@@ -1,15 +1,27 @@
-const chatForm = document.getElementById("chat-form");
 const chatMessages = document.querySelector(".chat-messages");
+const chatForm = document.getElementById("chat-form");
 const roomName = document.getElementById("room-name");
 const userList = document.getElementById("users");
+
+const videoBtn = document.getElementById("join-video-btn");
+const videoList = document.getElementById("video-list");
+
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const photo = document.getElementById("photo");
+const startbutton = document.getElementById("startbutton");
 
 // Получаем логин и комнату из урла
 const { username, room } = Qs.parse(location.search, {
   ignoreQueryPrefix: true,
 });
 
-
 const socket = io();
+
+//видео
+videoBtn.addEventListener("click", () => {
+  //navigator.getusermedia - устарел и не хочет работать
+});
 
 // подключение к комнате
 socket.emit("joinRoom", { username, room });
@@ -22,7 +34,7 @@ socket.on("roomUsers", ({ room, users }) => {
 
 //получаем сообщения с сервера
 socket.on("message", (message) => {
-  console.log(message);
+  // console.log(message);
   outputMessage(message);
 
   //скролл
@@ -31,13 +43,14 @@ socket.on("message", (message) => {
 
 // отправка сообщения
 chatForm.addEventListener("submit", (e) => {
+  //чтобы не обновлять страницу
   e.preventDefault();
 
   // получить тест сообщения
   let msg = e.target.elements.msg.value;
 
   msg = msg.trim();
-
+  //не пустое ли сообщение
   if (!msg) {
     return false;
   }

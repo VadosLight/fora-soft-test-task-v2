@@ -12,10 +12,14 @@
 }
 
 .btn {
+  cursor: pointer;
   border-width: 0;
   border-radius: var(--radius);
   margin-left: 15px;
   background-color: rgba(93, 194, 251, 0.3);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .chat-container {
@@ -36,6 +40,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .chat-main {
@@ -67,7 +75,6 @@
 
 .chat-sidebar ul li {
   padding: 10px 0;
-  list-style: rgb(204, 45, 45);
 }
 
 li::before {
@@ -106,7 +113,6 @@ li::before {
 
 .chat-form-container {
   padding: 20px 30px;
-  /* background-color: var(--main-color); */
   background-color: whitesmoke;
   border-bottom-left-radius: var(--radius);
   border-bottom-right-radius: var(--radius);
@@ -124,9 +130,10 @@ li::before {
   flex: 1;
   border-radius: var(--radius);
   border-width: 0;
+  outline: none;
 }
 
-#leave-btn {
+.head-btn {
   border-width: 0;
   border-radius: var(--radius);
   background-color: var(--light-color);

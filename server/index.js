@@ -26,15 +26,32 @@ const botName = "info";
 //Действия при подключении
 io.on("connection", (socket) => {
   socket.on("joinRoom", ({ username, room }) => {
-    
     const user = userJoin(socket.id, username, room);
 
     socket.join(user.room);
 
     socket.emit(
       "message",
-      formatMessage(botName, `${user.username}, добро пожаловать в комнату "${user.room}"`)
+      formatMessage(
+        botName,
+        `${user.username}, добро пожаловать в комнату "${user.room}"`
+      )
     );
+
+    db.all("Select * FROM messages ORDER BY id DESC LIMIT 30", (err, rows) => {
+      //обратно сортируем последние полученные сообщения
+      rows = rows.sort((a, b) => {
+        return a.id - b.id;
+      });
+      //отсылаем их клиенту
+      rows.forEach((row) => {
+        socket.emit("message", {
+          username: row.username,
+          time: row.time,
+          text: row.text,
+        });
+      });
+    });
 
     //оповещаем комнату, что к ним присоединились
     socket.broadcast
@@ -56,7 +73,7 @@ io.on("connection", (socket) => {
     const user = getCurrentUser(socket.id);
 
     const msgInfo = formatMessage(user.username, msg);
-    
+
     io.to(user.room).emit("message", msgInfo);
 
     //пишем в БД
@@ -64,7 +81,7 @@ io.on("connection", (socket) => {
       msg,
       msgInfo.time,
       user.username,
-      user.room
+      user.room,
     ]);
   });
 
@@ -73,7 +90,7 @@ io.on("connection", (socket) => {
     const user = userLeave(socket.id);
 
     if (user) {
-      io.to(user.room).emit(  
+      io.to(user.room).emit(
         "message",
         formatMessage(botName, `${user.username} вышел из чата`)
       );

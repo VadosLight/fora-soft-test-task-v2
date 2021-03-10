@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node index",
     "dev": "nodemon index",
+    "start peer": "peerjs --port 3001",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,7 +14,9 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "getusermedia": "^2.0.1",
     "moment": "^2.29.1",
+    "simple-peer": "^9.9.3",
     "socket.io": "^3.1.2",
     "sqlite3": "^5.0.2"
   },
