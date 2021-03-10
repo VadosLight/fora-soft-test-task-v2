@@ -67,16 +67,44 @@ chatForm.addEventListener("submit", (e) => {
 function outputMessage(message) {
   const div = document.createElement("div");
   div.classList.add("message");
+
   const p = document.createElement("p");
   p.classList.add("meta");
   p.innerText = message.username;
   p.innerHTML += ` <span>${message.time}</span>`;
   div.appendChild(p);
+
   const para = document.createElement("p");
   para.classList.add("text");
-  para.innerText = message.text;
+
+  const splitStr = message.text.split(" ");
+  splitStr.forEach((subStr) => {
+    if (validURL(subStr)) {
+      para.innerHTML += `<a href="${subStr}">${subStr}</a> `;
+    } else {
+      para.innerHTML += `<span>${subStr}</span> `;
+    }
+  });
+  // para.innerText = message.text;
+  // para.innerHTML += `<a href=""></a>`
+
   div.appendChild(para);
+
   document.querySelector(".chat-messages").appendChild(div);
+}
+
+//проверка строк на ссылки
+function validURL(str) {
+  var pattern = new RegExp(
+    "^(https?:\\/\\/)?" + // protocol
+      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+      "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+      "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+      "(\\#[-a-z\\d_]*)?$",
+    "i"
+  ); // fragment locator
+  return !!pattern.test(str);
 }
 
 //Добавить название комнаты

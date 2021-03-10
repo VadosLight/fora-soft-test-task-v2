@@ -38,14 +38,22 @@ io.on("connection", (socket) => {
       )
     );
 
-    db.all("Select * FROM messages ORDER BY id DESC LIMIT 30", (err, rows) => {
+    const SQL_ALL = `Select * FROM messages WHERE room="${user.room}" ORDER BY id DESC LIMIT 30`;
+
+    db.all(SQL_ALL, (err, rows) => {
       //обратно сортируем последние полученные сообщения
+      
       rows = rows.sort((a, b) => {
         return a.id - b.id;
       });
       //отсылаем их клиенту
       rows.forEach((row) => {
-        socket.emit("message", {
+        // socket.emit("message", {
+        //   username: row.username,
+        //   time: row.time,
+        //   text: row.text,
+        // });
+        io.to(user.room).emit("message", {
           username: row.username,
           time: row.time,
           text: row.text,
