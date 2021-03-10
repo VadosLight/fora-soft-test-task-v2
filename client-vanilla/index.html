@@ -16,16 +16,6 @@
       <main class="join-main">
         <form action="chat.html">
           <div class="form-control">
-            <label for="username">Логин</label>
-            <input
-              type="text"
-              name="username"
-              id="username"
-              placeholder="Введите имя пользователя"
-              required
-            />
-          </div>
-          <div class="form-control">
             <label for="room">Комната</label>
             <input
               type="text"
@@ -36,6 +26,17 @@
               onkeyup="return forceLower(this);"
             />
           </div>
+          <div class="form-control">
+            <label for="username">Логин</label>
+            <input
+              type="text"
+              name="username"
+              id="username"
+              placeholder="Введите имя пользователя"
+              required
+            />
+          </div>
+
           <button type="submit" class="btn">Войти</button>
         </form>
       </main>

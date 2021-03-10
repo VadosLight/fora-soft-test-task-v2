@@ -2,19 +2,24 @@ const chatMessages = document.querySelector(".chat-messages");
 const chatForm = document.getElementById("chat-form");
 const roomName = document.getElementById("room-name");
 const userList = document.getElementById("users");
+const popup = document.getElementById("pop-up");
+const popInput = document.getElementById("pop__input");
+const popBtn = document.getElementById("pop__btn");
+const copyBtn = document.getElementById("copy-btn");
 
 const videoBtn = document.getElementById("join-video-btn");
 const videoList = document.getElementById("video-list");
-
-const video = document.getElementById("video");
-const canvas = document.getElementById("canvas");
-const photo = document.getElementById("photo");
-const startbutton = document.getElementById("startbutton");
 
 // Получаем логин и комнату из урла
 const { username, room } = Qs.parse(location.search, {
   ignoreQueryPrefix: true,
 });
+
+if (!username) {
+  popup.style.display = "block";
+} else {
+  popup.style.display = "none";
+}
 
 const socket = io();
 
@@ -85,8 +90,6 @@ function outputMessage(message) {
       para.innerHTML += `<span>${subStr}</span> `;
     }
   });
-  // para.innerText = message.text;
-  // para.innerHTML += `<a href=""></a>`
 
   div.appendChild(para);
 
@@ -125,4 +128,22 @@ function outputUsers(users) {
 //покинуть комнату
 document.getElementById("leave-btn").addEventListener("click", () => {
   window.location = "../index.html";
+});
+
+popBtn.addEventListener("click", (e) => {
+  if (popInput.value) {
+    e.preventDefault();
+    window.location.href = `http://188.134.69.199:3000/chat.html?room=${room}&username=${popInput.value}`;
+  }
+});
+
+copyBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  const inputField = document.getElementById("msg");
+  const tmp = inputField.value;
+  inputField.value = `http://188.134.69.199:3000/chat.html?room=${room}`;
+  inputField.select();
+  document.execCommand("copy");
+  alert("Ссылка скопирована: " + inputField.value);
+  inputField.value = tmp;
 });

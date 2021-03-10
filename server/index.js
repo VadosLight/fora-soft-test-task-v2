@@ -48,12 +48,7 @@ io.on("connection", (socket) => {
       });
       //отсылаем их клиенту
       rows.forEach((row) => {
-        // socket.emit("message", {
-        //   username: row.username,
-        //   time: row.time,
-        //   text: row.text,
-        // });
-        io.to(user.room).emit("message", {
+        socket.emit("message", {
           username: row.username,
           time: row.time,
           text: row.text,

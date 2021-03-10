@@ -141,6 +141,57 @@ li::before {
   padding: 10px;
 }
 
+#pop-up {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+#pop__form {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  align-content: space-around;
+  margin: 30% 30%;
+  background-color: whitesmoke;
+
+  width: 30%;
+  height: 30%;
+  border-radius: var(--radius);
+  font-weight: bold;
+  font-size: x-large;
+}
+
+.pop__label {
+  background-color: var(--main-color);
+  width: 100%;
+  text-align: center;
+  height: 50px;
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+  padding: 10px 0;
+  color: whitesmoke;
+}
+
+#pop__input {
+  height: 30px;
+  border-radius: var(--radius);
+  border: none;
+  outline: none;
+}
+
+#pop__btn {
+  margin-bottom: 40px;
+  font-size: large;
+  font-weight: bold;
+  padding: 10px 15px;
+}
+
 @media (max-width: 700px) {
   .chat-main {
     display: block;
