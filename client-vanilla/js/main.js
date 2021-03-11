@@ -26,6 +26,14 @@ if (!username) {
   popup.style.display = "none";
 }
 
+function containsEncodedComponents(x) {
+  return (decodeURI(x) !== decodeURIComponent(x));
+}
+
+if(containsEncodedComponents(window.location.href)){
+  window.location.href = decodeURIComponent(window.location.href)
+}
+
 const socket = io();
 
 const constraints = (window.constraints = {
@@ -96,12 +104,12 @@ videoBtn.addEventListener("click", (e) => {
   if (!isVideoRun) {
     init(e);
     isVideoRun = true;
-    videoBtn.innerHTML  = "Выключить видео";
+    videoBtn.innerHTML = "Выключить видео";
   } else {
     localVideo.srcObject = null;
     window.stream = null;
     isVideoRun = false;
-    videoBtn.innerHTML  = "Включить видео";
+    videoBtn.innerHTML = "Включить видео";
   }
 });
 //==================================================
@@ -212,6 +220,7 @@ document.getElementById("leave-btn").addEventListener("click", () => {
 document.getElementById("pop__btn").addEventListener("click", (e) => {
   if (popInput.value) {
     e.preventDefault();
+
     window.location.href = `${CURR_URL}chat.html?room=${room}&username=${popInput.value}`;
   }
 });
@@ -220,7 +229,7 @@ document.getElementById("pop__btn").addEventListener("click", (e) => {
 document.getElementById("copy-btn").addEventListener("click", (e) => {
   const inputField = document.getElementById("msg");
   const tmp = inputField.value;
-  inputField.value = `${CURR_URL}chat.html?room=${room}`;
+  inputField.value = decodeURIComponent(`${CURR_URL}chat.html?room=${room}`);
   inputField.select();
   document.execCommand("copy");
   alert("Ссылка скопирована: " + inputField.value);

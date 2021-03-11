@@ -48,6 +48,12 @@ const botName = "info";
 //Действия при подключении
 io.on("connection", (socket) => {
   socket.on("joinRoom", ({ username, room }) => {
+    if (!username) {
+      username = "Аноним";
+    }
+    if (!room) {
+      room = "общая";
+    }
     const user = userJoin(socket.id, username, room);
 
     //присоединяем пользователя к сокету по названию комнаты
@@ -100,10 +106,10 @@ io.on("connection", (socket) => {
     //   });
     // }
 
-    socket.on("make-answer", data => {
+    socket.on("make-answer", (data) => {
       socket.to(data.to).emit("answer-made", {
         socket: socket.id,
-        answer: data.answer
+        answer: data.answer,
       });
     });
 
