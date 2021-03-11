@@ -3,11 +3,15 @@ const popInput = document.getElementById("pop__input");
 const roomName = document.getElementById("room-name");
 const userList = document.getElementById("users");
 const popup = document.getElementById("pop-up");
-
-const CURR_URL = window.location.protocol + "//" + window.location.host + "/";
-
 const videoBtn = document.getElementById("join-video-btn");
 const videoList = document.getElementById("video-list");
+
+const localVideo = document.getElementById("local-video");
+const remoteVideo = document.getElementById("remote-video");
+// const { RTCPeerConnection, RTCSessionDescription } = window;
+
+const CURR_URL = window.location.protocol + "//" + window.location.host + "/";
+let isVideoRun = false;
 
 // Получаем логин и комнату из урла
 const { username, room } = Qs.parse(location.search, {
@@ -29,34 +33,78 @@ const constraints = (window.constraints = {
   video: true,
 });
 
-function handleSuccess(stream) {
-  const video = document.querySelector("video");
-  const videoTracks = stream.getVideoTracks();
-  console.log("Got stream with constraints:", constraints);
-  console.log(`Using video device: ${videoTracks[0].label}`);
-  window.stream = stream;
-  video.srcObject = stream;
-}
-
 async function init(e) {
-
-
   try {
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
     handleSuccess(stream);
     e.target.disabled = true;
   } catch (e) {
-    console.log("Что-то пошло не так " + e);
+    console.log("Нет камеры или сервер запущен без SSL " + e);
     // TypeError: Cannot read property 'getUserMedia' of undefined
     //нужно получить SSL сертификат
   }
 }
 
+///
+// socket.on("call-made", async data => {
+//   await peerConnection.setRemoteDescription(
+//     new RTCSessionDescription(data.offer)
+//   );
+//   const answer = await peerConnection.createAnswer();
+//   await peerConnection.setLocalDescription(new RTCSessionDescription(answer));
+
+//   socket.emit("make-answer", {
+//     answer,
+//     to: data.socket
+//   });
+//  });
+
+// ///
+// socket.on("answer-made", async data => {
+//   await peerConnection.setRemoteDescription(
+//     new RTCSessionDescription(data.answer)
+//   );
+
+//   if (!isAlreadyCalling) {
+//     callUser(data.socket);
+//     isAlreadyCalling = true;
+//   }
+//  });
+//  ///
+//  peerConnection.ontrack = function({ streams: [stream] }) {
+
+//   if (remoteVideo) {
+//     remoteVideo.srcObject = stream;
+//   }
+//  };
+
+function handleSuccess(stream) {
+  window.stream = stream;
+  localVideo.srcObject = stream;
+  // stream.getTracks().forEach((track) => peerConnection.addTrack(track, stream));
+  //
+  // callUser(socket.room);
+  // peerConnection.ontrack = function ({ streams: [stream] }) {
+  //   if (remoteVideo) {
+  //     remoteVideo.srcObject = stream;
+  //   }
+  // };
+}
+
 //видео инит
 videoBtn.addEventListener("click", (e) => {
-  init(e);
+  if (!isVideoRun) {
+    init(e);
+    isVideoRun = true;
+    videoBtn.innerHTML  = "Выключить видео";
+  } else {
+    localVideo.srcObject = null;
+    window.stream = null;
+    isVideoRun = false;
+    videoBtn.innerHTML  = "Включить видео";
+  }
 });
-
+//==================================================
 // подключение к комнате
 socket.emit("joinRoom", { username, room });
 
@@ -68,7 +116,6 @@ socket.on("roomUsers", ({ room, users }) => {
 
 //получаем сообщения с сервера
 socket.on("message", (message) => {
-  // console.log(message);
   outputMessage(message);
 
   //скролл

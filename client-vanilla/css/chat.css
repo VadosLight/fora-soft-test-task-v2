@@ -29,6 +29,7 @@
   font-family: IBMPlexMono, sans-serif;
   font-weight: bold;
   align-items: center;
+  min-width: 600px;
 }
 
 .chat-header {
@@ -87,7 +88,7 @@ li::before {
 
 .chat-messages {
   padding: 30px;
-  max-height: 800px;
+  max-height: 700px;
   overflow-y: scroll;
 }
 
@@ -190,6 +191,26 @@ li::before {
   font-size: large;
   font-weight: bold;
   padding: 10px 15px;
+}
+
+#video-list{
+  display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-around;
+	align-items: center;
+	align-content: space-around;
+}
+
+video{
+  /* display: none; */
+  width: 40%;
+  height: 40%;
+  margin: 30px;
+  border-radius: var(--radius);
+  border-color: var(--light-color);
+  border-style: solid;
+  border-width: 1px;
 }
 
 @media (max-width: 700px) {

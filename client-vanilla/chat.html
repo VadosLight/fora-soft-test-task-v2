@@ -8,7 +8,7 @@
     <title>Чат</title>
   </head>
 
-  <body onload="init_page()">
+  <body>
     <div id="pop-up">
       <form id="pop__form">
         <label class="pop__label" for="username"
@@ -55,7 +55,8 @@
       </div>
 
       <div id="video-list">
-        <video ></video>
+        <video autoplay id="local-video"></video>
+        <video autoplay id="remote-video"></video>
       </div>
 
       <script

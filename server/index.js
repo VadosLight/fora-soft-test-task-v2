@@ -1,8 +1,8 @@
 const path = require("path");
-// const http = require("http");
+const http = require("http");
 const express = require("express");
 const socketio = require("socket.io");
-//------------------------------
+//для ssl
 const https = require("https");
 const fs = require("fs");
 
@@ -18,19 +18,27 @@ const {
   getRoomUsers,
 } = require("./utils/users");
 
+//создаем сервер HTTP или HTTPS
 const app = express();
-// const server = http.createServer(app);
 
-const server = https.createServer({
-  key: fs.readFileSync("./ssl/key.pem"),
-  cert: fs.readFileSync("./ssl/cert.pem"),
-
-}, app)
+//если нет сертификата, то запускаем без него
+//без сертификата не работает WebRTC - видеозвонки
+let server;
+try {
+  server = https.createServer(
+    {
+      key: fs.readFileSync("./ssl/key.pem"),
+      cert: fs.readFileSync("./ssl/cert.pem"),
+    },
+    app
+  );
+  console.log("используем HTTPS");
+} catch {
+  server = http.createServer(app);
+  console.log("используем HTTP");
+}
 
 const io = socketio(server);
-//--------------------------------------
-
-
 
 // чтобы работало на одном порту
 app.use(express.static(path.join(__dirname, "../client-vanilla")));
@@ -70,6 +78,33 @@ io.on("connection", (socket) => {
           `${user.username}, добро пожаловать в комнату "${user.room}"`
         )
       );
+    });
+
+    //видео
+    // socket.on("call-user", (data) => {
+    //   socket.to(data.to).emit("call-made", {
+    //     offer: data.offer,
+    //     socket: socket.id,
+    //   });
+    // });
+
+    // async function callUser(socketId) {
+    //   const offer = await peerConnection.createOffer();
+    //   await peerConnection.setLocalDescription(
+    //     new RTCSessionDescription(offer)
+    //   );
+
+    //   socket.emit("call-user", {
+    //     offer,
+    //     to: socketId,
+    //   });
+    // }
+
+    socket.on("make-answer", data => {
+      socket.to(data.to).emit("answer-made", {
+        socket: socket.id,
+        answer: data.answer
+      });
     });
 
     //оповещаем комнату, что к ним присоединились
