@@ -24,9 +24,14 @@ function getRoomUsers(room) {
   return users.filter((user) => user.room === room);
 }
 
+//экспортируем функции
 module.exports = {
+  //добавляем пользователя в общий список пользователей
   userJoin,
+  //получаем айди пользователя
   getCurrentUser,
+  //удаляем из листа ушедшего пользователя
   userLeave,
+  //получаем список пользователей в комнате
   getRoomUsers,
 };

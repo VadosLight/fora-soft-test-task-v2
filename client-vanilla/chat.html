@@ -7,18 +7,15 @@
     <link rel="stylesheet" href="css/chat.css" />
     <title>Чат</title>
   </head>
-  <body onload="init_page()">
 
+  <body onload="init_page()">
     <div id="pop-up">
       <form id="pop__form">
-        <label class="pop__label" for="username">Представьтесь, пожалуйста</label>
-        <input type="text"        
-        placeholder="Ваше имя" 
-        required
-        id="pop__input"
-        > 
-        <button  id="pop__btn" 
-        class="btn">Войти</button>
+        <label class="pop__label" for="username"
+          >Представьтесь, пожалуйста</label
+        >
+        <input type="text" placeholder="Ваше имя" required id="pop__input" />
+        <button id="pop__btn" class="btn">Войти</button>
       </form>
     </div>
 
@@ -41,6 +38,7 @@
         </div>
         <div class="chat-messages"></div>
       </main>
+
       <div class="chat-form-container">
         <form id="chat-form">
           <input
@@ -56,15 +54,15 @@
         </form>
       </div>
 
-      <div id="video-list">
+      <div id="video-list"></div>
 
-      </div>
+      <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
+        crossorigin="anonymous"
+      ></script>
 
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
-      crossorigin="anonymous"
-    ></script>
-    <script src="/socket.io/socket.io.js" defer></script>
-    <script src="js/main.js" defer></script>
+      <script src="/socket.io/socket.io.js" defer></script>
+      <script src="js/main.js" defer></script>
+    </div>
   </body>
 </html>

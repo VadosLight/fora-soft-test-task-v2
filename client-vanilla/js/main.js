@@ -1,20 +1,21 @@
 const chatMessages = document.querySelector(".chat-messages");
-const chatForm = document.getElementById("chat-form");
+const popInput = document.getElementById("pop__input");
 const roomName = document.getElementById("room-name");
 const userList = document.getElementById("users");
 const popup = document.getElementById("pop-up");
-const popInput = document.getElementById("pop__input");
-const popBtn = document.getElementById("pop__btn");
-const copyBtn = document.getElementById("copy-btn");
 
-const videoBtn = document.getElementById("join-video-btn");
-const videoList = document.getElementById("video-list");
+const CURR_URL = window.location.protocol + "//" + window.location.host + "/";
+
+// const videoBtn = document.getElementById("join-video-btn");
+// const videoList = document.getElementById("video-list");
 
 // Получаем логин и комнату из урла
 const { username, room } = Qs.parse(location.search, {
   ignoreQueryPrefix: true,
 });
 
+//если пользователь пришел без логина (по приглашению),
+//то открываем попап
 if (!username) {
   popup.style.display = "block";
 } else {
@@ -24,9 +25,9 @@ if (!username) {
 const socket = io();
 
 //видео
-videoBtn.addEventListener("click", () => {
-  //navigator.getusermedia - устарел и не хочет работать
-});
+// videoBtn.addEventListener("click", () => {
+//   //navigator.getusermedia - устарел и не хочет работать
+// });
 
 // подключение к комнате
 socket.emit("joinRoom", { username, room });
@@ -47,7 +48,7 @@ socket.on("message", (message) => {
 });
 
 // отправка сообщения
-chatForm.addEventListener("submit", (e) => {
+document.getElementById("chat-form").addEventListener("submit", (e) => {
   //чтобы не обновлять страницу
   e.preventDefault();
 
@@ -82,7 +83,9 @@ function outputMessage(message) {
   const para = document.createElement("p");
   para.classList.add("text");
 
+  //разбиваем текст на слова для поиска ссылок
   const splitStr = message.text.split(" ");
+  //пословно формируем сообщение, чтобы ссылки были кликабельными
   splitStr.forEach((subStr) => {
     if (validURL(subStr)) {
       para.innerHTML += `<a href="${subStr}">${subStr}</a> `;
@@ -96,17 +99,17 @@ function outputMessage(message) {
   document.querySelector(".chat-messages").appendChild(div);
 }
 
-//проверка строк на ссылки
+//является ли слово ссылкой
 function validURL(str) {
   var pattern = new RegExp(
-    "^(https?:\\/\\/)?" + // protocol
-      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-      "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-      "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+    "^(https?:\\/\\/)?" +
+      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" +
+      "((\\d{1,3}\\.){3}\\d{1,3}))" +
+      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" +
+      "(\\?[;&a-z\\d%_.~+=-]*)?" +
       "(\\#[-a-z\\d_]*)?$",
     "i"
-  ); // fragment locator
+  );
   return !!pattern.test(str);
 }
 
@@ -125,23 +128,24 @@ function outputUsers(users) {
   });
 }
 
-//покинуть комнату
+//покинуть комнату / переходим на главный экран
 document.getElementById("leave-btn").addEventListener("click", () => {
   window.location = "../index.html";
 });
 
-popBtn.addEventListener("click", (e) => {
+//слушаем кнопку на попапе, ожидаем, что пользователь ввел свой логин
+document.getElementById("pop__btn").addEventListener("click", (e) => {
   if (popInput.value) {
     e.preventDefault();
-    window.location.href = `http://188.134.69.199:3000/chat.html?room=${room}&username=${popInput.value}`;
+    window.location.href = `${CURR_URL}chat.html?room=${room}&username=${popInput.value}`;
   }
 });
 
-copyBtn.addEventListener("click", (e) => {
-  e.preventDefault();
+//кнопка для копирования ссылки в комнату в буфер обмена
+document.getElementById("copy-btn").addEventListener("click", (e) => {
   const inputField = document.getElementById("msg");
   const tmp = inputField.value;
-  inputField.value = `http://188.134.69.199:3000/chat.html?room=${room}`;
+  inputField.value = `${CURR_URL}chat.html?room=${room}`;
   inputField.select();
   document.execCommand("copy");
   alert("Ссылка скопирована: " + inputField.value);

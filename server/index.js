@@ -28,25 +28,18 @@ io.on("connection", (socket) => {
   socket.on("joinRoom", ({ username, room }) => {
     const user = userJoin(socket.id, username, room);
 
+    //присоединяем пользователя к сокету по названию комнаты
     socket.join(user.room);
 
-    socket.emit(
-      "message",
-      formatMessage(
-        botName,
-        `${user.username}, добро пожаловать в комнату "${user.room}"`
-      )
-    );
-
+    //запрос на получение последних 30 сообщений в комнате.
     const SQL_ALL = `Select * FROM messages WHERE room="${user.room}" ORDER BY id DESC LIMIT 30`;
-
     db.all(SQL_ALL, (err, rows) => {
       //обратно сортируем последние полученные сообщения
-      
       rows = rows.sort((a, b) => {
         return a.id - b.id;
       });
-      //отсылаем их клиенту
+
+      //по очереди отсылаем их подключившемуся
       rows.forEach((row) => {
         socket.emit("message", {
           username: row.username,
@@ -54,6 +47,15 @@ io.on("connection", (socket) => {
           text: row.text,
         });
       });
+
+      //отправляем приветственное сообщение вошедшему
+      socket.emit(
+        "message",
+        formatMessage(
+          botName,
+          `${user.username}, добро пожаловать в комнату "${user.room}"`
+        )
+      );
     });
 
     //оповещаем комнату, что к ним присоединились
@@ -64,14 +66,14 @@ io.on("connection", (socket) => {
         formatMessage(botName, `${user.username} присоединился к беседе`)
       );
 
-    //информация о пользователе и комнате
+    //обновляем информацию о списке пользователей и название комнаты
     io.to(user.room).emit("roomUsers", {
       room: user.room,
       users: getRoomUsers(user.room),
     });
   });
 
-  //обработчик сообщений
+  //обрабатываем сообщение
   socket.on("chatMessage", (msg) => {
     const user = getCurrentUser(socket.id);
 
@@ -79,7 +81,7 @@ io.on("connection", (socket) => {
 
     io.to(user.room).emit("message", msgInfo);
 
-    //пишем в БД
+    //записываем полученное сообщение в БД
     db.run(`INSERT INTO messages(text, time, username, room) VALUES(?,?,?,?)`, [
       msg,
       msgInfo.time,
