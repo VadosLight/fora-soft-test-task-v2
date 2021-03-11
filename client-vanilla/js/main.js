@@ -6,8 +6,8 @@ const popup = document.getElementById("pop-up");
 
 const CURR_URL = window.location.protocol + "//" + window.location.host + "/";
 
-// const videoBtn = document.getElementById("join-video-btn");
-// const videoList = document.getElementById("video-list");
+const videoBtn = document.getElementById("join-video-btn");
+const videoList = document.getElementById("video-list");
 
 // Получаем логин и комнату из урла
 const { username, room } = Qs.parse(location.search, {
@@ -24,10 +24,38 @@ if (!username) {
 
 const socket = io();
 
-//видео
-// videoBtn.addEventListener("click", () => {
-//   //navigator.getusermedia - устарел и не хочет работать
-// });
+const constraints = (window.constraints = {
+  audio: false,
+  video: true,
+});
+
+function handleSuccess(stream) {
+  const video = document.querySelector("video");
+  const videoTracks = stream.getVideoTracks();
+  console.log("Got stream with constraints:", constraints);
+  console.log(`Using video device: ${videoTracks[0].label}`);
+  window.stream = stream;
+  video.srcObject = stream;
+}
+
+async function init(e) {
+
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    handleSuccess(stream);
+    e.target.disabled = true;
+  } catch (e) {
+    console.log("Что-то пошло не так " + e);
+    // TypeError: Cannot read property 'getUserMedia' of undefined
+    //нужно получить SSL сертификат
+  }
+}
+
+//видео инит
+videoBtn.addEventListener("click", (e) => {
+  init(e);
+});
 
 // подключение к комнате
 socket.emit("joinRoom", { username, room });

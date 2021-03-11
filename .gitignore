@@ -74,3 +74,6 @@ typings/
 
 # FuseBox cache
 .fusebox/
+server/ssl/cert.pem
+server/ssl/csr.pem
+server/ssl/key.pem

@@ -1,7 +1,11 @@
 const path = require("path");
-const http = require("http");
+// const http = require("http");
 const express = require("express");
 const socketio = require("socket.io");
+//------------------------------
+const https = require("https");
+const fs = require("fs");
+
 const formatMessage = require("./utils/messages");
 
 const sqlite3 = require("sqlite3").verbose();
@@ -15,8 +19,18 @@ const {
 } = require("./utils/users");
 
 const app = express();
-const server = http.createServer(app);
+// const server = http.createServer(app);
+
+const server = https.createServer({
+  key: fs.readFileSync("./ssl/key.pem"),
+  cert: fs.readFileSync("./ssl/cert.pem"),
+
+}, app)
+
 const io = socketio(server);
+//--------------------------------------
+
+
 
 // чтобы работало на одном порту
 app.use(express.static(path.join(__dirname, "../client-vanilla")));
