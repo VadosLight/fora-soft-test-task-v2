@@ -48,6 +48,7 @@ const botName = "info";
 //Действия при подключении
 io.on("connection", (socket) => {
   socket.on("joinRoom", ({ username, room }) => {
+    console.log(`Пользователь ${username} подключился в комнату ${room}`);
     if (!username) {
       username = "Аноним";
     }

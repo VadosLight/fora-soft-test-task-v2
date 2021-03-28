@@ -77,3 +77,4 @@ typings/
 server/ssl/cert.pem
 server/ssl/csr.pem
 server/ssl/key.pem
+server/db/db.db
